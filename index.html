@@ -52,6 +52,11 @@
   .tile .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .tile .yr{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
   .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .head{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:8px}
+  .head .tile{border-width:2px}
+  .head .tile .lbl{font-size:14px;font-weight:600;color:var(--text-primary);min-height:0}
+  .head .tile .val{font-size:26px}
+  .bloque{font-size:13px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 8px}
   .tile .val{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
   .tile .var{margin-top:8px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--text-secondary)}
   .up{color:var(--pos)} .down{color:var(--neg)}
@@ -102,6 +107,10 @@
         <button data-conj="comparables" aria-pressed="false">Solo ferias con edición en ambos años</button>
       </div>
     </div>
+    <div class="bloque">Lo principal</div>
+    <div class="head" id="head"></div>
+    <p class="note" id="head-note"></p>
+    <div class="bloque">Detalle</div>
     <div class="tiles" id="tiles"></div>
     <p class="note" id="tiles-note"></p>
 
@@ -205,16 +214,35 @@ function agreg(anio){
   const movPorDia = sum(conMov,"mov")/sum(conMov,"dias");
   return {n:E.length, dias:sum(E,"dias"), puestos:sum(E,"puestos"), vis:sum(E,"vis"), mov:sum(E,"mov"),
           diasP:mean(E,"dias"), puestosP:mean(E,"puestos"), visP:mean(E,"vis"), movP:mean(E,"mov"),
-          movPorPuesto, movPorDia, tur:mean(E,"tur")};
+          movPorPuesto, movPorDia, tur:mean(E,"tur"),
+          movTur: (()=>{const v=E.filter(e=>e.mov!=null&&e.tur!=null); return v.length? v.reduce((t,e)=>t+e.mov*e.tur,0):null;})()};
+}
+function tileHTML(lbl,x,y,f,vt){
+  return `<div class="tile">
+      <div class="lbl">${lbl}</div>
+      <div class="row"><span class="yr"><i class="dot" style="background:var(--s2025)"></i>2025</span><span class="val">${f(x)}</span></div>
+      <div class="row"><span class="yr"><i class="dot" style="background:var(--s2026)"></i>2026</span><span class="val">${f(y)}</span></div>
+      ${vt==="none"?'<div class="var">&nbsp;</div>':`<div class="var">Variación: ${vt==="pp"?variationPts(x,y):variation(x,y)}</div>`}
+    </div>`;
+}
+function renderHead(){
+  const a=agreg(2025), b=agreg(2026);
+  document.getElementById("head").innerHTML =
+    tileHTML("Participantes por feria (promedio)", a.puestosP, b.puestosP, fmtN, "pct") +
+    tileHTML("Ventas totales", a.mov, b.mov, fmtM, "pct") +
+    tileHTML("Ventas a turistas y excursionistas (total)", a.movTur, b.movTur, fmtM, "pct");
+  document.getElementById("head-note").textContent =
+    "Participantes: emprendedores, artesanos y food trucks; se muestra el promedio porque muchos participan en varias ferias. " +
+    "Ventas a turistas y excursionistas: ventas de cada feria por su indicador de ventas a turistas. Faltan Carnaval 2025 y Diseña Paraná 2026, cuyas encuestas no relevaron ese dato.";
 }
 function renderTiles(){
+  renderHead();
   const a=agreg(2025), b=agreg(2026);
   const T = medida==="total" ? [
     ["Ferias relevadas", a.n, b.n, fmtN, "none"],
     ["Días de feria", a.dias, b.dias, fmtN, "pct"],
-    ["Puestos (emprendedores, artesanos y food trucks)", a.puestos, b.puestos, fmtN, "pct"],
     ["Visitantes (aprox.)", a.vis, b.vis, fmtN, "pct"],
-    ["Movimiento económico directo", a.mov, b.mov, fmtM, "pct"],
+    ["Ventas totales (movimiento económico directo)", a.mov, b.mov, fmtM, "pct"],
     ["Movimiento por puesto", a.movPorPuesto, b.movPorPuesto, fmtPesos, "pct"],
     ["Movimiento por día de feria", a.movPorDia, b.movPorDia, fmtM, "pct"],
     ["Indicador de ventas a turistas (promedio)", a.tur, b.tur, fmtP, "pp"],
@@ -222,7 +250,7 @@ function renderTiles(){
     ["Días por feria", a.diasP, b.diasP, fmtN1, "pct"],
     ["Puestos por feria", a.puestosP, b.puestosP, fmtN, "pct"],
     ["Visitantes por feria (aprox.)", a.visP, b.visP, fmtN, "pct"],
-    ["Movimiento económico por feria", a.movP, b.movP, fmtM, "pct"],
+    ["Ventas por feria (movimiento económico directo)", a.movP, b.movP, fmtM, "pct"],
     ["Movimiento por puesto", a.movPorPuesto, b.movPorPuesto, fmtPesos, "pct"],
     ["Movimiento por día de feria", a.movPorDia, b.movPorDia, fmtM, "pct"],
     ["Indicador de ventas a turistas (promedio)", a.tur, b.tur, fmtP, "pp"],
