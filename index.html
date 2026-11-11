@@ -227,12 +227,22 @@ function tileHTML(lbl,x,y,f,vt){
 }
 function renderHead(){
   const a=agreg(2025), b=agreg(2026);
-  document.getElementById("head").innerHTML =
-    tileHTML("Participantes por feria (promedio)", a.puestosP, b.puestosP, fmtN, "pct") +
-    tileHTML("Ventas totales", a.mov, b.mov, fmtM, "pct") +
-    tileHTML("Ventas a turistas y excursionistas (total)", a.movTur, b.movTur, fmtM, "pct");
+  const turDia = anio => { const v=edicionesAnio(anio).filter(e=>e.mov!=null&&e.tur!=null);
+    return v.length? v.reduce((t,e)=>t+e.mov*e.tur,0)/v.reduce((t,e)=>t+e.dias,0) : null; };
+  const H = medida==="total" ? [
+    ["Feriantes (total)", a.puestos, b.puestos, fmtN],
+    ["Ventas totales", a.mov, b.mov, fmtM],
+    ["Ventas a turistas y excursionistas (total)", a.movTur, b.movTur, fmtM],
+  ] : [
+    ["Feriantes por feria (promedio)", a.puestosP, b.puestosP, fmtN],
+    ["Ventas por día de feria (promedio)", a.movPorDia, b.movPorDia, fmtM],
+    ["Ventas a turistas y excursionistas por día de feria (promedio)", turDia(2025), turDia(2026), fmtM],
+  ];
+  document.getElementById("head").innerHTML = H.map(([l,x,y,f])=>tileHTML(l,x,y,f,"pct")).join("");
   document.getElementById("head-note").textContent =
-    "Participantes: emprendedores, artesanos y food trucks; se muestra el promedio porque muchos participan en varias ferias. " +
+    (medida==="total"
+      ? "Feriantes: suma de emprendedores, artesanos y food trucks de cada feria (una misma persona puede participar en varias). "
+      : "Promedios por día: ventas divididas por la cantidad total de días de feria. ") +
     "Ventas a turistas y excursionistas: ventas de cada feria por su indicador de ventas a turistas. Faltan Carnaval 2025 y Diseña Paraná 2026, cuyas encuestas no relevaron ese dato.";
 }
 function renderTiles(){
