@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ferias municipales de Paraná 2025-2026 · Evaluación de impacto</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f6f5f2; --surface-1:#fcfcfb; --border:#e3e1dc; --grid:#ecebe7;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#76756f;
+    --s2025:#2a78d6; --s2026:#eb6834;
+    --accent:#2a78d6; --accent-ink:#ffffff;
+    --pos:#006300; --neg:#b42b2b;
+    --chip:#ffffff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme: dark;
+      --surface-0:#121211; --surface-1:#1a1a19; --border:#33332f; --grid:#2a2a27;
+      --text-primary:#f0efec; --text-secondary:#c3c2b7; --text-muted:#9a998f;
+      --s2025:#3987e5; --s2026:#d95926;
+      --accent:#3987e5; --accent-ink:#0b0b0b;
+      --pos:#4fbf4f; --neg:#e66767;
+      --chip:#232321;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-0);color:var(--text-primary);
+    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 60px}
+  header h1{font-size:26px;line-height:1.2;margin:0 0 6px}
+  header p{margin:0;color:var(--text-secondary)}
+  .badge{display:inline-block;margin-top:10px;padding:3px 10px;border-radius:999px;
+    background:var(--chip);border:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+  section{margin-top:34px}
+  h2{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--text-secondary);margin:0 0 14px;font-size:14px}
+  .controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:0 0 16px}
+  .seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--chip)}
+  .seg button,.pills button{font:inherit;font-size:14px;border:0;background:transparent;color:var(--text-primary);
+    padding:8px 14px;cursor:pointer}
+  .seg button+button{border-left:1px solid var(--border)}
+  .seg button[aria-pressed="true"],.pills button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+  .seg button:focus-visible,.pills button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .pills button{border:1px solid var(--border);border-radius:999px;background:var(--chip)}
+  .card{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:18px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .tile{background:var(--surface-1);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+  .tile .lbl{font-size:13px;color:var(--text-secondary);margin-bottom:8px;min-height:2.6em}
+  .tile .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .tile .yr{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .tile .val{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+  .tile .var{margin-top:8px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--text-secondary)}
+  .up{color:var(--pos)} .down{color:var(--neg)}
+  .note{font-size:12.5px;color:var(--text-muted);margin-top:10px}
+  .legend{display:flex;gap:16px;font-size:13px;color:var(--text-secondary);margin:2px 0 8px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  svg text{font-family:inherit}
+  .chart-wrap{position:relative}
+  .tip{position:absolute;pointer-events:none;background:var(--surface-1);color:var(--text-primary);
+    border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;white-space:nowrap;z-index:5}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--grid);text-align:right;vertical-align:top}
+  th:first-child,td:first-child{text-align:left;white-space:normal}
+  td{white-space:nowrap}
+  .tblwrap{overflow-x:auto}
+  thead th{font-size:13px;color:var(--text-secondary);font-weight:600}
+  .detail-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px}
+  .detail-head h3{margin:0;font-size:18px}
+  .grid2{display:grid;grid-template-columns:1.7fr 1fr;gap:18px;margin-top:10px}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr}}
+  @media (max-width:600px){th,td{padding:8px 4px;font-size:13px}.card{padding:14px}.detail-head h3{font-size:17px}}
+  .obs{margin:12px 0 0;padding-left:18px;color:var(--text-secondary);font-size:14px}
+  .method ul{margin:8px 0 0;padding-left:18px;color:var(--text-secondary);font-size:14px}
+  .method li{margin-bottom:6px}
+  footer{margin-top:30px;font-size:12.5px;color:var(--text-muted)}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Ferias municipales de Paraná 2025-2026</h1>
+    <p>Evaluación de impacto económico de las ferias destacadas de emprendedores, artesanos y food trucks.</p>
+    <span class="badge">Valores monetarios a precios de septiembre de 2026</span>
+  </header>
+
+  <section id="agregado">
+    <h2>Resultados agregados</h2>
+    <p class="sub">Comparación entre años del conjunto de ferias relevadas.</p>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Medida">
+        <button data-medida="total" aria-pressed="true">Total</button>
+        <button data-medida="promedio" aria-pressed="false">Promedio por feria</button>
+      </div>
+      <div class="seg" role="group" aria-label="Conjunto de ferias">
+        <button data-conj="todas" aria-pressed="true">Todas las ferias relevadas</button>
+        <button data-conj="comparables" aria-pressed="false">Solo ferias con edición en ambos años</button>
+      </div>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <p class="note" id="tiles-note"></p>
+
+    <div class="card" style="margin-top:16px">
+      <h3 style="margin:0 0 2px;font-size:16px">Movimiento económico por feria</h3>
+      <p class="sub" style="margin-bottom:6px">Millones de pesos a precios de septiembre de 2026.</p>
+      <div class="legend"><span><i class="dot" style="background:var(--s2025)"></i>2025</span><span><i class="dot" style="background:var(--s2026)"></i>2026</span></div>
+      <div class="chart-wrap" id="chart-wrap"><svg id="chart" width="100%" role="img" aria-label="Movimiento económico por feria, 2025 y 2026"></svg><div class="tip" id="tip"></div></div>
+    </div>
+  </section>
+
+  <section id="por-feria">
+    <h2>Resultados por feria</h2>
+    <p class="sub">Elegí una feria para ver la comparación entre ediciones.</p>
+    <div class="pills" id="pills" role="group" aria-label="Feria"></div>
+    <div class="card" id="detail"></div>
+  </section>
+
+  <section class="method" id="metodologia">
+    <h2>Referencia metodológica</h2>
+    <ul>
+      <li><b>Fuente.</b> Encuestas en línea a emprendedores, artesanos y food trucks, realizadas al cierre de cada feria por la Subsecretaría de Producción de la Municipalidad de Paraná.</li>
+      <li><b>Movimiento económico directo.</b> Ventas declaradas por tramos, extendidas al total de puestos. En las ferias con subdeclaración comprobada en comercios testigo (Carnaval, Semana Santa y Vacaciones de invierno) se toma el tope de cada tramo, con el mismo criterio en ambos años. En Diseña Paraná 2026 la encuesta pidió el monto vendido, y se usó el promedio declarado.</li>
+      <li><b>Visitantes.</b> Estimación a partir de la afluencia diaria que perciben los feriantes. Una misma persona puede visitar la feria más de una vez.</li>
+      <li><b>Indicador de ventas a turistas y excursionistas.</b> Porcentaje de feriantes que vendió más a turistas y excursionistas, más la mitad de los que vendieron en partes iguales a turistas y a vecinos de Paraná.</li>
+      <li><b>Precios constantes.</b> Los montos se expresan a precios de septiembre de 2026 con el Índice de Precios al Consumidor (IPC) nivel general, total nacional, del INDEC (Instituto Nacional de Estadística y Censos), según el mes de cada feria. Las ferias de octubre de 2026 quedan a valores corrientes porque el índice de ese mes todavía no está publicado.</li>
+      <li><b>Alcance.</b> Los resultados son aproximaciones del impacto económico de cada evento. Los promedios se calculan sobre las ferias que tienen el dato.</li>
+    </ul>
+  </section>
+
+  <footer>Subsecretaría de Producción · Municipalidad de Paraná. Datos: <a href="datos/ferias_2025_2026.csv">ferias_2025_2026.csv</a>.</footer>
+</div>
+
+<script>
+const FERIAS = [
+  {id:"carnaval", nombre:"Feria de Carnaval",
+   ed:{2025:{fechas:"28/2 al 4/3/2025",dias:5,puestos:160,vis:40000,tur:null,mov:315188862},
+       2026:{fechas:"13 al 17/2/2026",dias:5,puestos:180,vis:42000,tur:0.477,mov:214094664}},
+   obs:["En 2026 los feriantes señalaron lluvias, puestos anegados y el horario solo de tarde.",
+        "La encuesta 2025 no relevó a quién se vendió más."]},
+  {id:"semana-santa", nombre:"Feria de Semana Santa",
+   ed:{2025:{fechas:"17 al 20/4/2025",dias:4,puestos:200,vis:44000,tur:0.689,mov:350778229},
+       2026:{fechas:"1 al 5/4/2026",dias:5,puestos:250,vis:45000,tur:0.426,mov:409700726}},
+   obs:["La edición 2026 tuvo un día más y 50 puestos más que la de 2025.",
+        "En 2025 la encuesta no ofrecía la opción “partes iguales”, por lo que el indicador de turistas no es del todo comparable."]},
+  {id:"vacaciones", nombre:"Vacaciones de invierno",
+   ed:{2025:{fechas:"4 al 20/7/2025",dias:14,puestos:240,vis:140000,tur:0.425,mov:891127065},
+       2026:{fechas:"3 al 19/7/2026",dias:14,puestos:250,vis:110000,tur:0.485,mov:661652376}},
+   obs:["Feria continua, con mayor actividad en los fines de semana y el feriado del 9 de julio."]},
+  {id:"dia-madre", nombre:"Día de la Madre",
+   ed:{2025:{fechas:"10 al 12/10/2025",dias:3,puestos:240,vis:6500,tur:0.295,mov:255035846},
+       2026:{fechas:"9 al 12/10/2026",dias:4,puestos:225,vis:9100,tur:0.531,mov:233653846,corriente:true}},
+   obs:["La edición 2026 tuvo un día más que la de 2025.",
+        "El monto 2026 queda a valores corrientes de octubre: el IPC de ese mes todavía no está publicado."]},
+  {id:"disena", nombre:"Diseña Paraná",
+   ed:{2025:{fechas:"21 al 23/11/2025",dias:3,puestos:80,vis:16000,tur:0.30,mov:92027439,etq:"4ta edición"},
+       2026:{fechas:"10 al 12/10/2026",dias:3,puestos:90,vis:null,tur:null,mov:72400610,corriente:true,etq:"5ta edición"}},
+   obs:["En 2026 el movimiento se estimó con los montos declarados (sin tramos), por lo que no se aplicó el tope.",
+        "La edición 2026 coincidió con la feria del Día de la Madre.",
+        "La encuesta 2026 no relevó visitantes ni a quién se vendió más."]},
+  {id:"navidena", nombre:"Feria Navideña",
+   ed:{2025:{fechas:"19 al 23/12/2025",dias:5,puestos:250,vis:12000,tur:0.185,mov:206831410}},
+   obs:["La edición 2026 todavía no se realizó."]},
+  {id:"tierra-agua", nombre:"Paraná Tierra & Agua",
+   ed:{2025:{fechas:"26 al 28/9/2025",dias:3,puestos:30,vis:10000,tur:0.125,mov:null}},
+   obs:["Sin estimación de movimiento económico.","Sin edición 2026 relevada."]}
+];
+
+const nf0 = new Intl.NumberFormat("es-AR",{maximumFractionDigits:0});
+const nf1 = new Intl.NumberFormat("es-AR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const fmtPesos = v => v==null ? "s/d" : "$ " + nf0.format(Math.round(v));
+const nf2 = new Intl.NumberFormat("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const compacto = () => window.innerWidth < 600;
+const fmtPesosT = v => v==null ? "s/d" : compacto() ? "$ " + nf2.format(v/1e6) + " M" : fmtPesos(v);
+const fmtM = v => v==null ? "s/d" : "$ " + nf1.format(v/1e6) + " M";
+const fmtN = v => v==null ? "s/d" : nf0.format(Math.round(v));
+const fmtN1 = v => v==null ? "s/d" : nf1.format(v);
+const fmtP = v => v==null ? "s/d" : nf1.format(v*100) + "%";
+function variation(a,b){
+  if(a==null||b==null||a===0) return '<span>—</span>';
+  const v=b/a-1, s=(v>0?"+":"")+nf1.format(v*100)+"%";
+  return `<span class="${v>0.0005?'up':v<-0.0005?'down':''}">${compacto()?'':(v>0?'▲ ':v<0?'▼ ':'')}${s}</span>`;
+}
+function variationPts(a,b){
+  if(a==null||b==null) return '<span>—</span>';
+  const v=(b-a)*100, s=(v>0?"+":"")+nf1.format(v)+" p.p.";
+  return `<span class="${v>0.05?'up':v<-0.05?'down':''}">${compacto()?'':(v>0?'▲ ':v<0?'▼ ':'')}${s}</span>`;
+}
+
+/* ---------- agregados ---------- */
+let medida="total", conj="todas";
+function edicionesAnio(anio){
+  return FERIAS.filter(f => conj==="todas" || (f.ed[2025] && f.ed[2026]))
+               .map(f => f.ed[anio]).filter(Boolean);
+}
+const sum = (arr,k) => { const v=arr.map(e=>e[k]).filter(x=>x!=null); return v.length? v.reduce((a,b)=>a+b,0):null; };
+const mean = (arr,k) => { const v=arr.map(e=>e[k]).filter(x=>x!=null); return v.length? v.reduce((a,b)=>a+b,0)/v.length:null; };
+function agreg(anio){
+  const E=edicionesAnio(anio), conMov=E.filter(e=>e.mov!=null);
+  const movPorPuesto = sum(conMov,"mov")/sum(conMov,"puestos");
+  const movPorDia = sum(conMov,"mov")/sum(conMov,"dias");
+  return {n:E.length, dias:sum(E,"dias"), puestos:sum(E,"puestos"), vis:sum(E,"vis"), mov:sum(E,"mov"),
+          diasP:mean(E,"dias"), puestosP:mean(E,"puestos"), visP:mean(E,"vis"), movP:mean(E,"mov"),
+          movPorPuesto, movPorDia, tur:mean(E,"tur")};
+}
+function renderTiles(){
+  const a=agreg(2025), b=agreg(2026);
+  const T = medida==="total" ? [
+    ["Ferias relevadas", a.n, b.n, fmtN, "none"],
+    ["Días de feria", a.dias, b.dias, fmtN, "pct"],
+    ["Puestos (emprendedores, artesanos y food trucks)", a.puestos, b.puestos, fmtN, "pct"],
+    ["Visitantes (aprox.)", a.vis, b.vis, fmtN, "pct"],
+    ["Movimiento económico directo", a.mov, b.mov, fmtM, "pct"],
+    ["Movimiento por puesto", a.movPorPuesto, b.movPorPuesto, fmtPesos, "pct"],
+    ["Movimiento por día de feria", a.movPorDia, b.movPorDia, fmtM, "pct"],
+    ["Indicador de ventas a turistas (promedio)", a.tur, b.tur, fmtP, "pp"],
+  ] : [
+    ["Días por feria", a.diasP, b.diasP, fmtN1, "pct"],
+    ["Puestos por feria", a.puestosP, b.puestosP, fmtN, "pct"],
+    ["Visitantes por feria (aprox.)", a.visP, b.visP, fmtN, "pct"],
+    ["Movimiento económico por feria", a.movP, b.movP, fmtM, "pct"],
+    ["Movimiento por puesto", a.movPorPuesto, b.movPorPuesto, fmtPesos, "pct"],
+    ["Movimiento por día de feria", a.movPorDia, b.movPorDia, fmtM, "pct"],
+    ["Indicador de ventas a turistas (promedio)", a.tur, b.tur, fmtP, "pp"],
+  ];
+  document.getElementById("tiles").innerHTML = T.map(([lbl,x,y,f,vt]) => `
+    <div class="tile">
+      <div class="lbl">${lbl}</div>
+      <div class="row"><span class="yr"><i class="dot" style="background:var(--s2025)"></i>2025</span><span class="val">${f(x)}</span></div>
+      <div class="row"><span class="yr"><i class="dot" style="background:var(--s2026)"></i>2026</span><span class="val">${f(y)}</span></div>
+      ${vt==="none"?'<div class="var">&nbsp;</div>':`<div class="var">Variación: ${vt==="pp"?variationPts(x,y):variation(x,y)}</div>`}
+    </div>`).join("");
+  const notas = conj==="todas"
+    ? "2025 incluye Feria Navideña y Paraná Tierra & Agua, que no tienen edición 2026 relevada. Por eso la comparación de totales mezcla conjuntos distintos."
+    : "Incluye Carnaval, Semana Santa, Vacaciones de invierno, Día de la Madre y Diseña Paraná.";
+  document.getElementById("tiles-note").textContent = notas +
+    " Visitantes y movimiento suman solo las ferias con dato; Diseña Paraná 2026 no tiene estimación de visitantes, y Paraná Tierra & Agua no tiene estimación de movimiento.";
+}
+document.querySelectorAll("[data-medida]").forEach(b=>b.addEventListener("click",()=>{
+  medida=b.dataset.medida; document.querySelectorAll("[data-medida]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderTiles();}));
+document.querySelectorAll("[data-conj]").forEach(b=>b.addEventListener("click",()=>{
+  conj=b.dataset.conj; document.querySelectorAll("[data-conj]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderTiles(); renderChart();}));
+
+/* ---------- gráfico ---------- */
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function renderChart(){
+  const svg=document.getElementById("chart"), wrap=document.getElementById("chart-wrap"), tip=document.getElementById("tip");
+  const lista=FERIAS.filter(f => conj==="todas" || (f.ed[2025]&&f.ed[2026]));
+  const W=wrap.clientWidth, narrow=W<560, labelW=narrow?0:Math.min(190, W*0.36), rightPad=narrow?48:70, barH=13, gap=2, groupGap=narrow?12:16, top=narrow?18:0;
+  const rows=lista.length, H=rows*(barH*2+gap+groupGap+top)+24;
+  const max=Math.max(...lista.flatMap(f=>[f.ed[2025]?.mov||0,f.ed[2026]?.mov||0]));
+  const x=v=>labelW + (W-labelW-rightPad)*v/max;
+  svg.setAttribute("height",H); svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  let s="";
+  const ticks=[0,250e6,500e6,750e6].filter(t=>t<=max*1.02);
+  ticks.forEach(t=>{ s+=`<line x1="${x(t)}" x2="${x(t)}" y1="0" y2="${H-20}" stroke="${css('--grid')}" stroke-width="1"/>
+      <text x="${x(t)}" y="${H-5}" font-size="11" fill="${css('--text-muted')}" text-anchor="${t===0?'start':'middle'}">${nf0.format(t/1e6)}</text>`; });
+  lista.forEach((f,i)=>{
+    const y0=i*(barH*2+gap+groupGap+top)+4+top;
+    s+= narrow ? `<text x="0" y="${y0-5}" font-size="13" fill="${css('--text-primary')}">${f.nombre}</text>`
+               : `<text x="0" y="${y0+barH+4}" font-size="13" fill="${css('--text-primary')}">${f.nombre}</text>`;
+    [2025,2026].forEach((a,k)=>{
+      const e=f.ed[a], y=y0+k*(barH+gap), col=css(a===2025?'--s2025':'--s2026');
+      if(!e){ s+=`<text x="${labelW+4}" y="${y+barH-2}" font-size="11" fill="${css('--text-muted')}">${a}: sin edición relevada</text>`; return; }
+      if(e.mov==null){ s+=`<text x="${labelW+4}" y="${y+barH-2}" font-size="11" fill="${css('--text-muted')}">${a}: sin estimación</text>`; return; }
+      const w=Math.max(2,x(e.mov)-labelW), r=Math.min(4,w/2);
+      s+=`<path d="M${labelW},${y} h${w-r} a${r},${r} 0 0 1 ${r},${r} v${barH-2*r} a${r},${r} 0 0 1 -${r},${r} h-${w-r} z" fill="${col}"
+            data-tip="${f.nombre} ${a}${e.etq?' ('+e.etq+')':''}|${fmtM(e.mov)}${e.corriente?' (valores corrientes de octubre)':''}"/>
+          <rect x="${labelW}" y="${y-1}" width="${W-labelW}" height="${barH+2}" fill="transparent" data-tip="${f.nombre} ${a}${e.etq?' ('+e.etq+')':''}|${fmtM(e.mov)}${e.corriente?' (valores corrientes de octubre)':''}"/>
+          <text x="${x(e.mov)+6}" y="${y+barH-2}" font-size="11.5" fill="${css('--text-secondary')}">${nf1.format(e.mov/1e6)}</text>`;
+    });
+  });
+  svg.innerHTML=s;
+  svg.querySelectorAll("[data-tip]").forEach(el=>{
+    el.addEventListener("mousemove",ev=>{
+      const [t,v]=el.dataset.tip.split("|"), bx=wrap.getBoundingClientRect();
+      tip.innerHTML=`<div style="color:var(--text-secondary)">${t}</div><div style="font-weight:600">${v}</div>`;
+      tip.style.display="block";
+      let lx=ev.clientX-bx.left+12; if(lx+tip.offsetWidth>bx.width) lx=ev.clientX-bx.left-tip.offsetWidth-12;
+      tip.style.left=lx+"px"; tip.style.top=(ev.clientY-bx.top-10)+"px";
+    });
+    el.addEventListener("mouseleave",()=>tip.style.display="none");
+  });
+}
+
+/* ---------- por feria ---------- */
+let actual="carnaval";
+function miniBars(f){
+  const met=[["Movimiento económico","mov",fmtM],["Movimiento por puesto","pp",fmtPesos],["Visitantes (aprox.)","vis",fmtN]];
+  const val=(e,k)=> !e?null : k==="pp" ? (e.mov!=null? e.mov/e.puestos : null) : e[k];
+  return met.map(([lbl,k,fm])=>{
+    const a=val(f.ed[2025],k), b=val(f.ed[2026],k), mx=Math.max(a||0,b||0)||1;
+    const bar=(v,col,yr)=> `<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
+        <span style="width:34px;font-size:12px;color:var(--text-muted)">${yr}</span>
+        <div style="flex:1;height:12px;position:relative">${v==null?'':`<div title="${yr}: ${fm(v)}" style="height:12px;width:${Math.max(1.5,100*v/mx)}%;background:${col};border-radius:0 4px 4px 0"></div>`}</div>
+        <span style="width:118px;text-align:right;font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--text-secondary)">${f.ed[yr]?fm(v):'—'}</span></div>`;
+    return `<div style="margin-bottom:12px"><div style="font-size:13px;color:var(--text-secondary);margin-bottom:2px">${lbl}</div>
+      ${bar(a,'var(--s2025)',2025)}${bar(b,'var(--s2026)',2026)}</div>`;
+  }).join("");
+}
+function renderDetail(){
+  const f=FERIAS.find(x=>x.id===actual), a=f.ed[2025], b=f.ed[2026], both=a&&b;
+  const pp=e=> e&&e.mov!=null? e.mov/e.puestos : null, pd=e=> e&&e.mov!=null? e.mov/e.dias : null;
+  const filas=[
+    ["Fechas", a?.fechas, b?.fechas, x=>x? `<span style="white-space:normal">${x}</span>`:"—", null],
+    ["Días de feria", a?.dias, b?.dias, fmtN, "pct"],
+    ["Puestos", a?.puestos, b?.puestos, fmtN, "pct"],
+    ["Visitantes (aprox.)", a?.vis, b?.vis, fmtN, "pct"],
+    ["Movimiento económico directo", a?.mov, b?.mov, fmtPesosT, "pct"],
+    ["Movimiento por puesto", pp(a), pp(b), fmtPesosT, "pct"],
+    ["Movimiento por día de feria", pd(a), pd(b), fmtPesosT, "pct"],
+    ["Indicador de ventas a turistas", a?.tur, b?.tur, fmtP, "pp"],
+  ];
+  const cell=(e,v,f)=> e? f(v) : '<span style="color:var(--text-muted)">sin edición</span>';
+  document.getElementById("detail").innerHTML = `
+    <div class="detail-head"><h3>${f.nombre}</h3>
+      <span class="sub" style="margin:0">${both?"Comparación 2025-2026":"Edición única relevada"}</span></div>
+    <div class="grid2">
+      <div class="tblwrap"><table><thead><tr><th></th>
+        <th><i class="dot" style="background:var(--s2025)"></i> 2025${a?.etq?'<br><span style="font-weight:400">'+a.etq+'</span>':''}</th>
+        <th><i class="dot" style="background:var(--s2026)"></i> 2026${b?.etq?'<br><span style="font-weight:400">'+b.etq+'</span>':''}</th>
+        ${both?'<th>Variación</th>':''}</tr></thead>
+      <tbody>${filas.map(([l,x,y,fm,vt])=>`<tr><td>${l}</td><td>${cell(a,x,fm)}</td><td>${cell(b,y,fm)}</td>
+        ${both?`<td>${vt==null?'':vt==="pp"?variationPts(x,y):variation(x,y)}</td>`:''}</tr>`).join("")}</tbody></table></div>
+      <div>${miniBars(f)}</div>
+    </div>
+    <ul class="obs">${f.obs.map(o=>`<li>${o}</li>`).join("")}</ul>`;
+}
+document.getElementById("pills").innerHTML = FERIAS.map(f=>`<button data-feria="${f.id}" aria-pressed="${f.id===actual}">${f.nombre}</button>`).join("");
+document.querySelectorAll("[data-feria]").forEach(b=>b.addEventListener("click",()=>{
+  actual=b.dataset.feria; document.querySelectorAll("[data-feria]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderDetail();}));
+
+renderTiles(); renderChart(); renderDetail();
+window.addEventListener("resize",()=>{renderChart();renderDetail();});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",renderChart);
+</script>
+</body>
+</html>
